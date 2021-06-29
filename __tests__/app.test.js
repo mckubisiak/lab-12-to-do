@@ -28,35 +28,91 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns animals', async() => {
-
+    test('create todo', async() => {
       const expectation = [
         {
-          'id': 1,
-          'name': 'bessie',
-          'cool_factor': 3,
-          'owner_id': 1
+          'id': 4,
+          'todo': 'eat snakes on a plaen',
+          'complete': false,
+          'owner_id': 2
         },
         {
-          'id': 2,
-          'name': 'jumpy',
-          'cool_factor': 4,
-          'owner_id': 1
-        },
-        {
-          'id': 3,
-          'name': 'spot',
-          'cool_factor': 10,
-          'owner_id': 1
+          'id': 5,
+          'todo': 'routes run with authorization',
+          'complete': false,
+          'owner_id': 2
         }
       ];
-
+      for (let todo of expectation) {
+        await fakeRequest(app)
+          .post('/api/todolist')
+          .send(todo)
+          .set('Authorization', token)
+          .expect('Content-Type', /json/)
+          .expect(200);
+      }
       const data = await fakeRequest(app)
-        .get('/animals')
+        .get('/api/todolist')
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
-
       expect(data.body).toEqual(expectation);
     });
+
+
+
+    test('complete todo', async() => {
+      const expectation = [
+        {
+          'id': 4,
+          'todo': 'eat snakes on a plaen',
+          'complete': false,
+          'owner_id': 2
+        },
+        {
+          'id': 5,
+          'todo': 'routes run with authorization',
+          'complete': true,
+          'owner_id': 2
+        }
+      ];
+      await fakeRequest(app)
+        .put('/api/todolist/5')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      const data = await fakeRequest(app)
+        .get('/api/todolist')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(data.body).toEqual(expectation);
+    });
+
+
+
+    test('complete todo', async() => {
+      const expectation = [
+        {
+          'id': 4,
+          'todo': 'eat snakes on a plaen',
+          'complete': false,
+          'owner_id': 2
+        },
+        {
+          'id': 5,
+          'todo': 'routes run with authorization',
+          'complete': true,
+          'owner_id': 2
+        }
+      ];
+      const data = await fakeRequest(app)
+        .get('/api/todolist')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(data.body).toEqual(expectation);
+    });
+
   });
 });

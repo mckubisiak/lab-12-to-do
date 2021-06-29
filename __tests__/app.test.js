@@ -61,7 +61,7 @@ describe('app routes', () => {
 
 
 
-    test('create todo', async() => {
+    test('complete todo', async() => {
       const expectation = [
         {
           'id': 4,
@@ -77,11 +77,11 @@ describe('app routes', () => {
         }
       ];
 
-        await fakeRequest(app)
-          .put('/api/todolist/5')
-          .set('Authorization', token)
-          .expect('Content-Type', /json/)
-          .expect(200);
+      await fakeRequest(app)
+        .put('/api/todolist/5')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
       
       const data = await fakeRequest(app)
         .get('/api/todolist')

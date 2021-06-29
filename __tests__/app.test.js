@@ -29,7 +29,6 @@ describe('app routes', () => {
     });
 
     test('create todo', async() => {
-
       const expectation = [
         {
           'id': 4,
@@ -44,7 +43,6 @@ describe('app routes', () => {
           'owner_id': 2
         }
       ];
-
       for (let todo of expectation) {
         await fakeRequest(app)
           .post('/api/todolist')
@@ -53,14 +51,45 @@ describe('app routes', () => {
           .expect('Content-Type', /json/)
           .expect(200);
       }
-
       const data = await fakeRequest(app)
         .get('/api/todolist')
         .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
-
       expect(data.body).toEqual(expectation);
     });
+
+
+
+    test('create todo', async() => {
+      const expectation = [
+        {
+          'id': 4,
+          'todo': 'eat snakes on a plaen',
+          'complete': false,
+          'owner_id': 2
+        },
+        {
+          'id': 5,
+          'todo': 'routes run with authorization',
+          'complete': true,
+          'owner_id': 2
+        }
+      ];
+
+        await fakeRequest(app)
+          .put('/api/todolist/5')
+          .set('Authorization', token)
+          .expect('Content-Type', /json/)
+          .expect(200);
+      
+      const data = await fakeRequest(app)
+        .get('/api/todolist')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(data.body).toEqual(expectation);
+    });
+ 
   });
 });
